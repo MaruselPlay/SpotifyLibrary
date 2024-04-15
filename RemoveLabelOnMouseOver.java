@@ -15,13 +15,13 @@ public class RemoveLabelOnMouseOver extends EventListener implements MouseMotion
   public void mouseDragged(MouseEvent event){}
 
   public void mouseMoved(MouseEvent event){
-    this.tryHideAnyLabels(event.getX(), event.getY());
+    this.tryHideAnyLabels();
   }
 
 
-  public void tryHideAnyLabels(int x, int y){
+  public void tryHideAnyLabels(){
     for(EventListener listener : GUI.getInstance().getEventManager().getListeners()){
-      if(listener instanceof AddLabelOnMouseOver){
+      if(listener instanceof AddLabelOnMouseOver && listener.getComponent() != this.component){
         ((AddLabelOnMouseOver) listener).hideLabel();
       }
     }

@@ -4,19 +4,24 @@ import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 public class AddLabelOnMouseOver extends EventListener implements MouseMotionListener{
 
-  private String mouseOverLabel;
+  private String mouseOverLabelAdd;
+  private String mouseOverLabelBack;
   private JLabel currentLabel;
+  private JLabel buttonText;
 
-  public AddLabelOnMouseOver(String mouseOverLabel, Component component){
+  public AddLabelOnMouseOver(String mouseOverLabelAdd, String mouseOverLabelBack, JLabel buttonText, Component component){
     super(component);
 
-    this.mouseOverLabel = mouseOverLabel;
-    this.currentLabel = new JLabel(this.mouseOverLabel, SwingConstants.CENTER);
+    this.mouseOverLabelAdd = mouseOverLabelAdd;
+    this.mouseOverLabelBack = mouseOverLabelBack;
+    this.buttonText = buttonText;
+    this.currentLabel = new JLabel(this.mouseOverLabelAdd, SwingConstants.CENTER);
     this.currentLabel.setFont(new Font("Arial", Font.PLAIN, (int) GUI.getInstance().getWidth() / 80));
     this.currentLabel.setOpaque(true);
     this.currentLabel.setForeground(Color.WHITE);
@@ -41,6 +46,11 @@ public class AddLabelOnMouseOver extends EventListener implements MouseMotionLis
     }
     if(this.component.getHeight() - y < this.currentLabel.getHeight()){
       y -= this.currentLabel.getHeight();
+    }
+    if(this.buttonText.getText().equals("Go back")){
+      this.currentLabel.setText(this.mouseOverLabelBack);
+    }else{
+      this.currentLabel.setText(this.mouseOverLabelAdd);
     }
     this.currentLabel.setLocation((int) (GUI.getInstance().getMainPanel().getWidth() - GUI.getInstance().getRightPanel().getWidth() * 0.67), GUI.getInstance().getMainPanel().getHeight() + y - GUI.getInstance().getRightPanel().getHeight());
     this.currentLabel.setSize((int) this.currentLabel.getPreferredSize().getWidth() + 15, (int) this.currentLabel.getPreferredSize().getHeight() + 15);

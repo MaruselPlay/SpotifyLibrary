@@ -3,26 +3,23 @@ import java.util.ArrayList;
 
 public class Spotify{
 
+  private static Spotify instance;
+
   private GUI gui = new GUI(this);
-  private List<Playlist> playlists = new ArrayList<Playlist>();
   private List<Track> tracks = new ArrayList<Track>();
   
   public static void main(String[] args){
     Spotify instance = new Spotify();
+    Spotify.instance = instance;
     instance.start();
   }
 
-  public void start(){
-    Playlist playlist;
-    for(int i = 0; i < 100; i++){
-      playlist = new Playlist("Playlist " + i);
-      this.playlists.add(playlist);
-    }
-    this.gui.init();
+  public static Spotify getInstance(){
+    return Spotify.instance;
   }
 
-  public List<Playlist> getPlaylists(){
-    return this.playlists;
+  public void start(){
+    this.gui.init();
   }
 
   public void addTrack(Track track){
