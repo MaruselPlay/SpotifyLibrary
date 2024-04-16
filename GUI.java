@@ -1,29 +1,24 @@
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
-import java.io.File;
-import java.util.List;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.ArrayList;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileSystemView;
 
 public class GUI extends JFrame{
 
@@ -31,7 +26,6 @@ public class GUI extends JFrame{
 
   private Spotify spotify;
   private JPanel mainPanel = new JPanel(null);
-  private JPanel leftPanel = new JPanel(new BorderLayout());
   private JPanel rightPanel = new JPanel(new GridLayout(10, 1));
   private JPanel trackPanel = new JPanel(new BorderLayout());
   private JPanel addTrackPanel = new JPanel(new GridLayout(7, 1));
@@ -39,7 +33,11 @@ public class GUI extends JFrame{
   private JSlider trackProgressBar = new JSlider(0, 1000, 0);
   private EventManager eventManager = new EventManager();
   private AudioPlayer audioPlayer = new AudioPlayer();
-  private JPanel scrollPanel;
+  private JPanel scrollPanel = new JPanel(null);
+  private JPanel scrollHelperPanel = new JPanel();
+  private JScrollPane scrollPane;
+
+  public ArrayList<Track> trackList;
 
   public GUI(Spotify spotify){
     this.spotify = spotify;
@@ -48,11 +46,24 @@ public class GUI extends JFrame{
 
     ComponentUtils.setSizeRelativeTo(this, Toolkit.getDefaultToolkit().getScreenSize(), 70);
     ComponentUtils.setLocationRelativeTo(this, Toolkit.getDefaultToolkit().getScreenSize());
-    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    this.addWindowListener(new WindowListener(){
+      public void windowClosing(WindowEvent event){
+        Spotify.getInstance().saveTracksToFile();
+        event.getWindow().setVisible(false);
+        System.exit(0);
+      }
+
+      public void windowActivated(WindowEvent event){}
+      public void windowClosed(WindowEvent event){}
+      public void windowDeactivated(WindowEvent event){}
+      public void windowDeiconified(WindowEvent event){}
+      public void windowIconified(WindowEvent event){}
+      public void windowOpened(WindowEvent event){}
+    });
 
     this.setBackground(Color.BLACK);
     this.mainPanel.setBackground(Color.BLACK);
-    this.leftPanel.setBackground(Color.BLACK);
     this.rightPanel.setBackground(Color.BLACK);
     GUI.instance = this;
   }
@@ -63,10 +74,6 @@ public class GUI extends JFrame{
 
   public JPanel getMainPanel(){
     return this.mainPanel;
-  }
-
-  public JPanel getLeftPanel(){
-    return this.leftPanel;
   }
 
   public JPanel getRightPanel(){
@@ -98,23 +105,23 @@ public class GUI extends JFrame{
 
 		this.trackProgressBar.setPaintTrack(true);
 		this.trackProgressBar.setPaintTicks(true);
-    this.trackProgressBar.setBackground(Color.CYAN);
+    this.trackProgressBar.setBackground(Color.BLACK);
 		this.trackProgressBar.setPaintLabels(true);
     this.eventManager.addListener(new BarChangeListener(this.trackProgressBar));
     this.addDefaultListeners(this.trackProgressBar);
     this.trackPanel.add(this.trackProgressBar, BorderLayout.SOUTH);
 
     JPanel panel = new JPanel();
-    panel.setBackground(Color.ORANGE);
+    panel.setBackground(Color.BLACK);
     this.addDefaultListeners(panel);
 
-    JButton buttonPrevious = new JButton();
+    /*JButton buttonPrevious = new JButton();
     buttonPrevious.setBorder(null);
     buttonPrevious.setBackground(Color.BLACK);
     this.addDefaultListeners(buttonPrevious);
     JLabel previous = new JLabel(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("previous.png"))));
     buttonPrevious.add(previous);
-    panel.add(buttonPrevious);
+    panel.add(buttonPrevious);*/
 
     JButton buttonPlay = new JButton();
     buttonPlay.setBorder(null);
@@ -124,14 +131,15 @@ public class GUI extends JFrame{
     panel.add(buttonPlay);
     this.addDefaultListeners(buttonPlay);
     this.eventManager.addListener(new PlayButtonPressListener(buttonPlay, play));
+    this.eventManager.addListener(new SelectionOnMouseOver(buttonPlay));
 
-    JButton buttonNext = new JButton();
+    /*JButton buttonNext = new JButton();
     buttonNext.setBorder(null);
     buttonNext.setBackground(Color.BLACK);
     this.addDefaultListeners(buttonNext);
     JLabel next = new JLabel(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("next.png"))));
     buttonNext.add(next);
-    panel.add(buttonNext);
+    panel.add(buttonNext);*/
 
     this.trackPanel.add(panel);
     this.mainPanel.add(this.trackPanel);
@@ -145,28 +153,45 @@ public class GUI extends JFrame{
     this.pageTitle.setSize(this.pageTitle.getPreferredSize());
     this.mainPanel.add(this.pageTitle);
 
-    JScrollPane pane = this.buildScrollPane(this.spotify.getTracks());
+    this.buildScrollPane();
 
-    this.scrollPanel = new JPanel(null);
     ComponentUtils.setSizeRelativeTo(this.scrollPanel, this.getSize(), 70.3);
-    this.eventManager.addListener(new ScrollPanelListener(this.scrollPanel, pane));
+    this.eventManager.addListener(new ScrollPanelListener(this.scrollPanel));
     this.scrollPanel.setLocation(100, (int) (this.getHeight() / 8));
-    this.scrollPanel.add(pane);
 
     this.mainPanel.add(this.scrollPanel);
   }
 
-  public JScrollPane buildScrollPane(List<Track> tracks){
-    JPanel scrollPanel = new JPanel(new GridLayout(this.spotify.getTracks().size(), 1));
-    scrollPanel.setBackground(Color.BLACK);
-    scrollPanel.setPreferredSize(new Dimension(1000, 7700));
-    this.addDefaultListeners(scrollPanel);
+  public void buildScrollPane(){
+    this.updateTrackListPanel();
 
+    if(this.scrollPane != null){
+      this.scrollPane.setVisible(false);
+      this.scrollPanel.remove(this.scrollPane);
+    }
+
+    this.scrollPane = new JScrollPane(this.scrollHelperPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.scrollPane.getVerticalScrollBar().setUnitIncrement(25);
+    this.scrollPane.getVerticalScrollBar().setUI(new ScrollBarUI());
+    this.scrollPane.setBorder(null);
+    this.scrollPane.setSize((int) (this.getWidth() * 0.703), (int) (this.getHeight() * 0.603));
+    this.scrollPane.setLocation(0, 100);
+    this.addDefaultListeners(this.scrollPane);
+
+    this.scrollPanel.add(this.scrollPane);
+  }
+
+  public void updateTrackListPanel(){
+    this.scrollHelperPanel = new JPanel();
+    this.scrollHelperPanel.setLayout(new GridLayout(this.spotify.getTracks().size() < 7 ? 7 : this.spotify.getTracks().size(), 1));
+    this.scrollHelperPanel.setBackground(Color.BLACK);
+    this.addDefaultListeners(this.scrollHelperPanel);
+    
     Font fontTitle = new Font("Sans-serif", Font.BOLD, (int) this.getWidth() / 80);
     Font fontArtist = new Font("Sans-serif", Font.PLAIN, (int) this.getWidth() / 90);
-    for(Track track : tracks){
+    for(Track track : this.trackList){
       JPanel buttonPanel = new JPanel();
-      buttonPanel.setBackground(Color.YELLOW);
+      buttonPanel.setBackground(Color.BLACK);
       this.addDefaultListeners(buttonPanel);
 
       JButton button = ComponentUtils.makeButton("", new Dimension((int) (this.getSize().getWidth() * 0.67), (int) (this.getSize().getHeight() / 13)));
@@ -196,19 +221,8 @@ public class GUI extends JFrame{
       button.add(artist);
       button.add(icon);
       buttonPanel.add(button);
-      scrollPanel.add(buttonPanel);
+      this.scrollHelperPanel.add(buttonPanel);
     }
-
-    JScrollPane scrollPane = new JScrollPane(scrollPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    scrollPane.getVerticalScrollBar().setUnitIncrement(25);
-    scrollPane.getVerticalScrollBar().setUI(new ScrollBarUI());
-    scrollPane.setBorder(null);
-    scrollPane.setSize((int) (this.getWidth() * 0.703), (int) (this.getHeight() * 0.603));
-    //ComponentUtils.setSizeRelativeTo(scrollPane, this.getSize(), 60.3);
-    scrollPane.setLocation(0, 100);
-    this.addDefaultListeners(scrollPane);
-
-    return scrollPane;
   }
 
   public void initAddTrackScreen(){
@@ -296,7 +310,13 @@ public class GUI extends JFrame{
   }
 
   public void showMainScreen(){
-    this.initMainScreen();
+    this.pageTitle.setText("My Tracks");
+    this.pageTitle.setFont(new Font("Sans-serif", Font.BOLD, (int) this.getWidth() / 40));
+    this.pageTitle.setForeground(Color.WHITE);
+    this.pageTitle.setLocation(this.getWidth() / 10, this.getHeight() / 30);
+    this.pageTitle.setSize(this.pageTitle.getPreferredSize());
+    this.buildScrollPane();
+    this.scrollPanel.setVisible(true);
   }
 
   public void showAddTrackScreen(){
@@ -314,7 +334,8 @@ public class GUI extends JFrame{
   }
 
   public void hideMainScreen(){
-    this.mainPanel.remove(this.scrollPanel);
+    this.scrollPanel.setVisible(false);
+    this.scrollPane.setVisible(false);
   }
 
   public void hideAddTrackScreen(){
@@ -328,9 +349,9 @@ public class GUI extends JFrame{
   public void initMainPanel(){
     this.initAddTrackScreen();
     this.initTrackPanel();
-
+    this.initMainScreen();
     this.hideAddTrackScreen();
-    this.showMainScreen();
+    //this.showMainScreen();
     //this.showTrackPanel();
     //this.showAddTrackScreen();
   }
@@ -362,19 +383,18 @@ public class GUI extends JFrame{
   }
 
   public void init(){
+    this.trackList = new ArrayList<>(Spotify.getInstance().getTracks());
+
     this.initMainPanel();
     this.initRightPanel();
-    this.rightPanel.setBackground(Color.GREEN);
-    this.leftPanel.setBackground(Color.GRAY);
-    this.mainPanel.setBackground(Color.RED);
+    this.rightPanel.setBackground(Color.BLACK);
+    this.mainPanel.setBackground(Color.BLACK);
 
     this.add(this.mainPanel, BorderLayout.CENTER);
     this.add(this.rightPanel, BorderLayout.EAST);
-    this.add(this.leftPanel, BorderLayout.WEST);
 
     this.addDefaultListeners(this.mainPanel);
     this.addDefaultListeners(this.rightPanel);
-    this.addDefaultListeners(this.leftPanel);
     this.addDefaultListeners(this.addTrackPanel);
     this.addDefaultListeners(this);
 

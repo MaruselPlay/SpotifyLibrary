@@ -9,8 +9,8 @@ import javax.swing.JLabel;
 
 public class PlayButtonPressListener extends EventListener implements ActionListener{
 
-  private int currentStatus = AudioPlayer.STATUS_STOPPED;
-  private JLabel playIcon;
+  public int currentStatus = AudioPlayer.STATUS_STOPPED;
+  public  JLabel playIcon;
 
   public PlayButtonPressListener(JButton component, JLabel playIcon){
     super(component);
@@ -23,11 +23,7 @@ public class PlayButtonPressListener extends EventListener implements ActionList
   }
 
   public void actionPerformed(ActionEvent event){
-    if(this.currentStatus == AudioPlayer.STATUS_STOPPED){
-      this.playIcon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("stop.png"))));
-      GUI.getInstance().getAudioPlayer().play("C:\\Server\\SpotifyLibrary\\song.wav");
-      this.currentStatus = AudioPlayer.STATUS_PLAYING;
-    }else if(this.currentStatus == AudioPlayer.STATUS_PAUSED){
+    if(this.currentStatus == AudioPlayer.STATUS_PAUSED){
       this.playIcon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("stop.png"))));
       GUI.getInstance().getAudioPlayer().resume();
       this.currentStatus = AudioPlayer.STATUS_PLAYING;

@@ -4,11 +4,9 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.sound.sampled.AudioFileFormat;
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -71,7 +69,6 @@ public class ButtonChooseFilePressListener extends EventListener implements Acti
       this.trySelectFile(file);
       if(this.isFileSelected){
         this.setLabelText(file.getName() + " selected", new Color(120, 120, 120));
-        this.file = file;
       }
     }
   }
@@ -98,10 +95,10 @@ public class ButtonChooseFilePressListener extends EventListener implements Acti
       clip.open(audioInputStream);
       this.duration.setText(((int) (clip.getMicrosecondLength() / 1000 / 1000)) + "");
 
+      this.file = new File(System.getProperty("user.dir") + "\\" + file.getName());
       this.isFileSelected = true;
     }catch(Exception exception){
       this.setLabelText("Unsupported file format", Color.RED);
-      System.out.print(exception.getMessage());
       exception.printStackTrace();
     }
   }

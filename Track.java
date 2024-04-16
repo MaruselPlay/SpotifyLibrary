@@ -48,4 +48,13 @@ public class Track{
   public ImageIcon getIcon(){
     return this.icon;
   }
+
+  public String toString(){
+    return this.title + "," + this.artist + "," + this.duration + "," + this.rating + "," + this.listens + "," + this.file.getPath();
+  }
+
+  public static Track fromString(String string){
+    String[] data = string.split(",");
+    return new Track(data[0], data[1], Integer.parseInt(data[2]), Integer.parseInt(data[3]), Integer.parseInt(data[4]), new File(data[5]));
+  }
 }

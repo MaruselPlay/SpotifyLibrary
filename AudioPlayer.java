@@ -90,8 +90,6 @@ class AudioPlayer{
       Thread.sleep(50);
     }catch(Exception exception){}
 
-    System.out.println(position / 1000 * this.currentTrack.getMicrosecondLength());
-
     this.currentFrame = (long) (position / 1000 * this.currentTrack.getMicrosecondLength());
     this.currentTrack.setMicrosecondPosition((long) (position / 1000 * this.currentTrack.getMicrosecondLength()));
     this.currentTrack.start();
@@ -100,6 +98,7 @@ class AudioPlayer{
 	public void resetAudioStream(){
     try{
       AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(this.curentFile).getAbsoluteFile());
+
       this.currentTrack = AudioSystem.getClip();
       this.currentTrack.open(audioInputStream);
       this.currentTrack.loop(Clip.LOOP_CONTINUOUSLY);

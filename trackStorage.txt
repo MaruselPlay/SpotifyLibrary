@@ -1,0 +1,6 @@
+E,STS-51L,167,5,5,C:\Server\SpotifyLibrary\STS-51L.wav
+C,STS-51L,167,3,3,C:\Server\SpotifyLibrary\STS-51L.wav
+A,STS-51L,167,1,1,C:\Server\SpotifyLibrary\STS-51L.wav
+D,STS-51L,167,4,4,C:\Server\SpotifyLibrary\STS-51L.wav
+B,STS-51L,167,2,2,C:\Server\SpotifyLibrary\STS-51L.wav
+HH,kk,167,5,5,C:\Server\SpotifyLibrary\song.wav

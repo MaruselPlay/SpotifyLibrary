@@ -4,8 +4,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 public class ComponentUtils{
 
@@ -30,7 +28,7 @@ public class ComponentUtils{
   public static JButton makeButton(String name){
     JButton button = new JButton(name);
     button.setForeground(Color.WHITE);
-    button.setBackground(Color.BLACK);
+    button.setBackground(new Color(50, 50, 50));
     button.setPreferredSize(new Dimension((int) (GUI.getInstance().getWidth() / 8), (GUI.getInstance().getHeight() / 15)));
     button.setFocusPainted(false);
     button.setFocusable(false);
