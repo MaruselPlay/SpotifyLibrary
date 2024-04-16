@@ -137,6 +137,15 @@ public class ButtonSubmitPressListener extends EventListener implements ActionLi
     }
     if(!this.checkFile()){
       allChecksPassed = false;
+      this.fileChooseListener.
+      for(EventListener listener : GUI.getInstance().getEventManager().getListeners()){
+        if(listener instanceof ButtonChooseFilePressListener){
+          ((ButtonChooseFilePressListener) listener).errorLabel.setText("File not ");
+          ((ButtonChooseFilePressListener) listener).getLabel().setText(error);
+          GUI.getInstance().showUpdated();
+          break;
+        }
+      }
     }
     if(allChecksPassed){
       Spotify.getInstance().addTrack(new Track(this.title.getText(), this.artist.getText(), Integer.parseInt(this.duration.getText()), Integer.parseInt(this.rating.getText()), Integer.parseInt(this.listens.getText()), this.fileChooseListener.getFile()));
