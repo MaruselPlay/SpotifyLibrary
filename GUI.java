@@ -38,7 +38,7 @@ public class GUI extends JFrame{
   private JScrollPane scrollPane;
 
   public ArrayList<Track> trackList;
-
+  
   public GUI(Spotify spotify){
     this.spotify = spotify;
     this.setTitle("SpotifyLibrary");
@@ -68,36 +68,80 @@ public class GUI extends JFrame{
     GUI.instance = this;
   }
 
+  /**
+   * Retrieves the singleton instance of the GUI class.
+   * This method provides global access to the single instance of the GUI class,
+   * ensuring that only one instance of the GUI is created throughout the application.
+   * If an instance does not exist, it should be created elsewhere before calling this method.
+   * 
+   * @return The single instance of the GUI class.
+   */
   public static GUI getInstance(){
-    return GUI.instance;
+      return GUI.instance;
   }
 
+  /**
+   * Retrieves the main panel of the GUI.
+   * This method provides access to the main panel of the application's GUI,
+   * allowing for modifications and updates to the panel's components.
+   * 
+   * @return the main JPanel of the GUI
+   */
   public JPanel getMainPanel(){
-    return this.mainPanel;
+      return this.mainPanel;
   }
 
+  /**
+   * The getRightPanel() function returns the rightPanel JPanel.
+   * 
+   * @return The method `getRightPanel` is returning a `JPanel` object named `rightPanel`.
+   */
   public JPanel getRightPanel(){
     return this.rightPanel;
   }
 
+  /**
+   * The function returns the EventManager associated with the current object.
+   * 
+   * @return An `EventManager` object is being returned.
+   */
   public EventManager getEventManager(){
     return this.eventManager;
   }
 
+  /**
+   * The function returns the AudioPlayer object associated with the current instance.
+   * 
+   * @return An AudioPlayer object is being returned.
+   */
   public AudioPlayer getAudioPlayer(){
     return this.audioPlayer;
   }
 
+  /**
+   * The `showUpdated` function in Java revalidates and repaints the component.
+   */
   public void showUpdated(){
     this.revalidate();
     this.repaint();
   }
 
+  /**
+   * The `addDefaultListeners` function adds two default event listeners to a given component.
+   * 
+   * @param component The `component` parameter is an instance of a `Component` class, which represents
+   * a GUI component in a Java Swing application. It could be a button, label, panel, or any other
+   * graphical element that the user interacts with on the screen.
+   */
   public void addDefaultListeners(Component component){
     this.eventManager.addListener(new RemoveLabelOnMouseOver(component));
     this.eventManager.addListener(new UnselectionOnMouseOver(component));
   }
 
+  /**
+   * The `initTrackPanel` function sets up a panel with a progress bar and buttons for previous, play,
+   * and next actions in a Java GUI application.
+   */
   public void initTrackPanel(){
     trackPanel.setBackground(Color.BLACK);
     trackPanel.setSize((int) (this.getWidth() * 0.4), (int) (this.getHeight() * 0.085));
@@ -145,6 +189,10 @@ public class GUI extends JFrame{
     this.mainPanel.add(this.trackPanel);
   }
 
+  /**
+   * The `initMainScreen` function sets up the main screen by updating the page title, setting its font
+   * and color, adding a scroll pane, and positioning it within the main panel.
+   */
   public void initMainScreen(){
     this.pageTitle.setText("My Tracks");
     this.pageTitle.setFont(new Font("Sans-serif", Font.BOLD, (int) this.getWidth() / 40));
@@ -162,6 +210,10 @@ public class GUI extends JFrame{
     this.mainPanel.add(this.scrollPanel);
   }
 
+  /**
+   * The function `buildScrollPane` creates and configures a JScrollPane component with a vertical
+   * scrollbar for a track list panel.
+   */
   public void buildScrollPane(){
     this.updateTrackListPanel();
 
@@ -181,6 +233,8 @@ public class GUI extends JFrame{
     this.scrollPanel.add(this.scrollPane);
   }
 
+  // The above code is a Java method `updateTrackListPanel()` that updates the track list panel in a
+  // GUI application. Here's a breakdown of what the code is doing:
   public void updateTrackListPanel(){
     this.scrollHelperPanel = new JPanel();
     this.scrollHelperPanel.setLayout(new GridLayout(this.spotify.getTracks().size() < 7 ? 7 : this.spotify.getTracks().size(), 1));
@@ -225,6 +279,10 @@ public class GUI extends JFrame{
     }
   }
 
+  /**
+   * The `initAddTrackScreen` function sets up a panel for adding a new track with input fields for
+   * title, artist, duration, rating, listens, and a button to submit the track information.
+   */
   public void initAddTrackScreen(){
     this.addTrackPanel.setBackground(Color.BLACK);
     ComponentUtils.setSizeRelativeTo(this.addTrackPanel, this.getSize(), 70.3);
@@ -309,6 +367,10 @@ public class GUI extends JFrame{
     this.mainPanel.add(this.addTrackPanel);
   }
 
+  /**
+   * The function `showMainScreen` sets the title, font, color, location, and visibility of a page
+   * title and scroll panel in a Java GUI.
+   */
   public void showMainScreen(){
     this.pageTitle.setText("My Tracks");
     this.pageTitle.setFont(new Font("Sans-serif", Font.BOLD, (int) this.getWidth() / 40));
@@ -319,6 +381,10 @@ public class GUI extends JFrame{
     this.scrollPanel.setVisible(true);
   }
 
+  /**
+   * The function `showAddTrackScreen` sets up the UI to display an "Add new" track screen in a Java
+   * application.
+   */
   public void showAddTrackScreen(){
     this.pageTitle.setText("Add new");
     this.pageTitle.setFont(new Font("Sans-serif", Font.BOLD, (int) this.getWidth() / 40));
@@ -329,23 +395,39 @@ public class GUI extends JFrame{
     this.addTrackPanel.setVisible(true);
   }
 
+  /**
+   * The function `showTrackPanel` sets the visibility of the track panel to true.
+   */
   public void showTrackPanel(){
     this.trackPanel.setVisible(true);
   }
 
+  /**
+   * The `hideMainScreen` function sets the visibility of a scroll panel and scroll pane to false.
+   */
   public void hideMainScreen(){
     this.scrollPanel.setVisible(false);
     this.scrollPane.setVisible(false);
   }
 
+  /**
+   * The function `hideAddTrackScreen` sets the visibility of the `addTrackPanel` to false in Java.
+   */
   public void hideAddTrackScreen(){
     this.addTrackPanel.setVisible(false);
   }
 
+  /**
+   * The function `hideTrackPanel` sets the visibility of the trackPanel to false.
+   */
   public void hideTrackPanel(){
     this.trackPanel.setVisible(false);;
   }
 
+  /**
+   * The `initMainPanel` function initializes various panels and screens while hiding the add track
+   * screen.
+   */
   public void initMainPanel(){
     this.initAddTrackScreen();
     this.initTrackPanel();
@@ -356,6 +438,10 @@ public class GUI extends JFrame{
     //this.showAddTrackScreen();
   }
 
+  /**
+   * The `initRightPanel` function creates a button with text and an icon for adding a new track in a
+   * graphical user interface.
+   */
   public void initRightPanel(){
     JButton button = ComponentUtils.makeButton("", new Dimension(this.getWidth() / 8, this.getHeight() / 15));
     button.setLayout(null);
@@ -382,6 +468,10 @@ public class GUI extends JFrame{
     this.rightPanel.add(button);
   }
 
+  /**
+   * The `init` method initializes panels, sets backgrounds, adds components, adds listeners, sets
+   * border, and makes the frame visible in a Java GUI application.
+   */
   public void init(){
     this.trackList = new ArrayList<>(Spotify.getInstance().getTracks());
 
