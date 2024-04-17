@@ -25,10 +25,19 @@ public class ButtonChooseFilePressListener extends EventListener implements Acti
 
   private File file;
   private JTextField duration;
+<<<<<<< HEAD:Spotify/listener/ButtonChooseFilePressListener.java
   private JLabel errorLabel;
 
   public boolean isFileSelected = false;
   public boolean errorOccured = false;
+=======
+  private JTextField rating;
+  private JTextField listens;
+  private boolean isFileSelected = false;
+>>>>>>> 606732320da8c24913f60b6bbfabd0a11eaea0dc:ButtonChooseFilePressListener.java
+
+  public boolean errorOccured = false;
+  public JLabel errorLabel;
 
   public ButtonChooseFilePressListener(
     JButton component,
