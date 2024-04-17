@@ -1,6 +1,8 @@
-E,STS-51L,167,5,5,C:\Server\SpotifyLibrary\STS-51L.wav
-C,STS-51L,167,3,3,C:\Server\SpotifyLibrary\STS-51L.wav
-A,STS-51L,167,1,1,C:\Server\SpotifyLibrary\STS-51L.wav
-D,STS-51L,167,4,4,C:\Server\SpotifyLibrary\STS-51L.wav
-B,STS-51L,167,2,2,C:\Server\SpotifyLibrary\STS-51L.wav
-HH,kk,167,5,5,C:\Server\SpotifyLibrary\song.wav
+TWIN,STS-51L,167,5,2,STS-51L.wav
+Clairvoyant,MISOGI,167,2,3,Clairvoyant.wav
+NEVER EXISTED,LXST CXNTURY,167,3,2,LXST CXNTURY - NEVER EXISTED.wav
+Despair 2,Skorde,167,4,2,Skorde - Despair 2.wav
+Stay with me,BLADEFEAR,167,5,2,BLADEFEAR - Stay with me.wav
+Aesthetic,illusorysence,167,4,2,illusorysence - Aesthetic.wav
+Ecstasy,Skorde,167,2,3,Skorde - Ecstasy.wav
+GAME,Mishashi Sensei,167,2,5,Mishashi Sensei - GAME.wav
